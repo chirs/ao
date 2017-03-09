@@ -162,3 +162,18 @@
 (define-public (square f)
     (if (number? f) (* f f)
                     (make-tree 'square f)))
+
+
+
+;; Handle division, which divides 1 / x for a single argument
+;; (and accumulates cdr args with multiplication otherwise)
+(define _> >)
+(define (gt . args)
+    (receive (nums other) (partition number? args)
+    (cond ((null-list? other) (apply _> nums))
+          ((= 1 (length args)) (make-tree 'gt 1 (car args)))
+          (else (make-tree 'div (car args) (apply 'and (cdr args)))))))
+
+;     "Creates a tree. A tree is returned without changes. A number is converted to a constant. A symbol and further arguments are converted to an operation"
+
+(wrap-custom > gt)
